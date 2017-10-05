@@ -148,42 +148,30 @@ int distributereceive(int f, int c, int *m, int *x, int size) {
 	MPI_Status Stat;
 	int fila[MAXCOL];
 	int dest=1;
-	int count_send=0;
-	int count_rcv=0;
-	
 	
 	for (int i=0;i < f; i++){//filas
-		
 		for(int a=0;a<c;a++){//columnas
-			
 			fila[a]=m[i*MAXCOL + a];
 		}
-		MPI_Send(&fila, c, MPI_INT, dest, TAGTAREA, MPI_COMM_WORLD);
+		MPI_Send(&fila, c, MPI_INT, dest, TAGTAREA, MPI_COMM_WORLD); //Envía filas
 		printf("DR - Sent row %d to task %d with tag %d\n",i,dest,TAGTAREA);
-		count_send++;
-		MPI_Recv(&sum,1,MPI_INT,dest,TAGRESULT,MPI_COMM_WORLD, &Stat);
+		MPI_Recv(&sum,1,MPI_INT,dest,TAGRESULT,MPI_COMM_WORLD, &Stat); //Recibe sumas parciales de cada proceso
 		x[i]=sum;
 		printf("DR - Received sum:%d from task %d\n", sum, Stat.MPI_SOURCE);
-		count_rcv++;
+		
+		//Asigna un proceso a cada fila
 		if (dest==size-1){
 			dest=1;
 		}
 		else{
-				dest++;
+			dest++;
 		}
-		
-		
 	}
-	if(count_send==count_rcv){
-		
-		for(int a=1; a<size; a++){
-			MPI_Send(&done, 1, MPI_INT, a, TAGPARAR, MPI_COMM_WORLD);
-		}
-		
-	}	
 	
-	
-		
+	// Cuando ya ha enviado todas las filas, envía mensaje con TAG de parada	
+	for(int a=1; a<size; a++){
+		MPI_Send(&done, 1, MPI_INT, a, TAGPARAR, MPI_COMM_WORLD);
+	}
 	return 0;
 }
 
@@ -209,13 +197,11 @@ int receive(int rank) {
 	*/
 	int in_vect[MAXCOL], in_row[MAXCOL];
 	
-	if(rank<size){
-	
 	//recibe valor de b
 	MPI_Recv(in_vect,MAXCOL,MPI_INT,0,TAGVECTOR,MPI_COMM_WORLD, &Stat);
 	printf("RR - Task %d: Received vector from task %d with tag %d \n",rank, Stat.MPI_SOURCE, Stat.MPI_TAG);
 		   
-	while(Stat.MPI_TAG!=TAGPARAR){
+	while(Stat.MPI_TAG!=TAGPARAR){ //Verifica que no sea TAG de parada
 		//Recibe msj del maestro. 
 		MPI_Recv(in_row,MAXCOL,MPI_INT,0,MPI_ANY_TAG,MPI_COMM_WORLD, &Stat);
 		printf("RR - Task %d: Received row from task %d with tag %d\n",rank, Stat.MPI_SOURCE, Stat.MPI_TAG);
@@ -226,12 +212,12 @@ int receive(int rank) {
 				//Si es tarea, multiplica fila por vector
 				sum=sum+in_vect[k]*in_row[k];
 			}
-			MPI_Send(&sum,1,MPI_INT,0,TAGRESULT,MPI_COMM_WORLD);
+			MPI_Send(&sum,1,MPI_INT,0,TAGRESULT,MPI_COMM_WORLD); //Envía resultado 
 			printf("RR - Task %d: Sent sum=%d to task 0 with tag %d\n",rank, sum,TAGRESULT);
 		}
 	}
-	printf("RR - Task %d: STOPPED\n",rank);
-	}
+	printf("RR - Task %d: STOPPED\n",rank); // Si es TAG de parada, no hace nada mas
+	
 	return 0;
 }
 
