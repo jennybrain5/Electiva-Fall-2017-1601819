@@ -153,14 +153,13 @@ int distributereceive(int f, int c, int *m, int *x, int size) {
 	
 	
 	for (int i=0;i < f; i++){//filas
+		
 		for(int a=0;a<c;a++){//columnas
 			
 			fila[a]=m[i*MAXCOL + a];
 		}
-		printf("\n sendind row: ");
-		printvector(c,fila);
 		MPI_Send(&fila, c, MPI_INT, dest, TAGTAREA, MPI_COMM_WORLD);
-		printf("DR - sent row to task %d with tag %d\n",dest,TAGTAREA);
+		printf("DR - Sent row %d to task %d with tag %d\n",i,dest,TAGTAREA);
 		count_send++;
 		MPI_Recv(&sum,1,MPI_INT,dest,TAGRESULT,MPI_COMM_WORLD, &Stat);
 		x[i]=sum;
@@ -175,13 +174,10 @@ int distributereceive(int f, int c, int *m, int *x, int size) {
 		
 		
 	}
-	printf("\n\nFINAL RESULT X:\n");
-	printvector(MAXFILAS,x);	
-	printf("\n\n");
 	if(count_send==count_rcv){
 		
-		for(int a=1; a<=size; a++){
-			MPI_Send(&done, 1, MPI_INTEGER, a, TAGPARAR, MPI_COMM_WORLD);
+		for(int a=1; a<size; a++){
+			MPI_Send(&done, 1, MPI_INT, a, TAGPARAR, MPI_COMM_WORLD);
 		}
 		
 	}	
@@ -222,7 +218,7 @@ int receive(int rank) {
 	while(Stat.MPI_TAG!=TAGPARAR){
 		//Recibe msj del maestro. 
 		MPI_Recv(in_row,MAXCOL,MPI_INT,0,MPI_ANY_TAG,MPI_COMM_WORLD, &Stat);
-		printf("RR - Task %d: Received row from task %d with tag %d \n",rank, Stat.MPI_SOURCE, Stat.MPI_TAG);
+		printf("RR - Task %d: Received row from task %d with tag %d\n",rank, Stat.MPI_SOURCE, Stat.MPI_TAG);
 		//Verifica si es una tarea
 		if(Stat.MPI_TAG==TAGTAREA){
 			int sum=0;
@@ -231,10 +227,10 @@ int receive(int rank) {
 				sum=sum+in_vect[k]*in_row[k];
 			}
 			MPI_Send(&sum,1,MPI_INT,0,TAGRESULT,MPI_COMM_WORLD);
-			printf("RR - Task %d sent sum=%d to task 0 with tag TAGRESULT\n",rank, sum);
+			printf("RR - Task %d: Sent sum=%d to task 0 with tag %d\n",rank, sum,TAGRESULT);
 		}
 	}
-	
+	printf("RR - Task %d: STOPPED\n",rank);
 	}
 	return 0;
 }
