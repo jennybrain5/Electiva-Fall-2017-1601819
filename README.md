@@ -36,6 +36,9 @@ Programa que estima el valor de **PI** aplicando el metodo montecarlo y la instr
 	Cuando se requieren realizar procesos que pueden hacerse de forma paralela, es decir, que el resultado de un proceso no depende
 	de un resultado anterior. Caso de ejemplo, es el calculo de PI con el algoritmo de Montecarlo. 
 
+## myBroadcast.c
+Programa que realiza la misma funcion `MPI_Bcast` a partir de las funciones `MPI_Send` y `MPI_Recv`
+
 ## Axb.c
 Programa que la multiplicacion matrix x vector y distribuye su calculo entre
 las unidades de procesamiento disponibles
