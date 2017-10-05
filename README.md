@@ -25,9 +25,12 @@ El parametro `x` puede ser definido por el usuario
 ## mpiEx4a.c
 Programa que estima el valor de **PI** aplicando el metodo montecarlo y la instruccion
 `MPI_Reduce`.
+
+
 	* Por que piensa que es importante MPI en un problema como el del calculo de **pi** usando la aproximacion Montecarlo?
 	Porque en este caso se requiere de un gran número de calculos no secuenciales ni dependientes, por lo cual es útil dividirlos entre diferentes
 	unidades de procesamiento disponibles.
+	
 	
 	* Para que tipo de problemas entonces es apropiado MPI?
 	Cuando se requieren realizar procesos que pueden hacerse de forma paralela, es decir, que el resultado de un proceso no depende
