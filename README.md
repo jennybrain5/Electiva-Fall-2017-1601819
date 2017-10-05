@@ -7,10 +7,10 @@ Código 1601819
 Este Directorio contiene ejercicios para mostrar el manejo de diferentes instrucciones usando MPI
 
 ## mpiEx2a.c
-Uso de las funciones 'MPI_Comm_size' y 'MPI_Comm_rank'
+Uso de las funciones `MPI_Comm_size` y `MPI_Comm_rank`
 
 ## mpiEx2b.c
-programa en el cual **solo** el maestro imprime el numero total de procesos en ejecucion
+programa en el cual **SOLO** el maestro imprime el numero total de procesos en ejecucion
 
 ## mpiEx3a.c
 Programa en el que en lugar de intercambiar caracteres, se intercambien enteros.
@@ -20,7 +20,7 @@ Programa de intercambio de mensasjes entre procesos siguiendo una topología en 
 
 ## mpiExample4.c
 Programa que calcula la suma de los primeros **X** numeros de forma distribuida.
-El parametro 'x' puede ser definido por el usuario
+El parametro `x` puede ser definido por el usuario
 
 ## mpiEx4a.c
 Programa que estima el valor de **PI** aplicando el metodo montecarlo y la instruccion
